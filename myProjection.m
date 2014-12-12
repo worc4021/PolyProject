@@ -2,7 +2,7 @@ function [Aout,bout] = myProjection(Ain,bin,dim)
 % [Aout,bout] = myProjection(Ain,bin,dim)
 % Projection of {x: Ain*x<=bin} onto x(1:(n-dim)).
 
-THEFOLDER = './';
+THEFOLDER = '../';
 
 TEMP = [bin,-Ain];
 

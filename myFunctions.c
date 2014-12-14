@@ -5,25 +5,28 @@
 struct rat *intToRat (lrs_mp Nin, lrs_mp Din)
 {
   struct rat *retVal;
-  FILE *tp1, *tp2;
-  tp1 = fopen("TEMP","w");
-  assert( tp1 != NULL );
   mpq_t rop;
-  mpq_init(rop);  
-  mpz_out_str (tp1 , 10 , Nin);
-  if ( !zero(Din) ){ /* not a just a ray */
-    if ( !one(Din) ) /* wouldn't change the value */
-      {
-        fprintf (tp1, "/");
-        mpz_out_str (tp1,10,Din);
-      }
-    }
-  tp2 = freopen("TEMP", "r", tp1);
-  assert( tp2 != NULL );
-  assert( mpq_inp_str (rop, tp2, 10) > 0);
-  fclose(tp2);
+  char *strT;
+  char strD[10000];
+  char strN[10000];
+  char strR[25000];
+  
+  strT = mpz_get_str (strN, 2, Nin);
+  assert ( strT != NULL );
+
+  strT = mpz_get_str (strD, 2, Din);
+  assert ( strT != NULL );
+  
+  strcpy(strR, strN);
+  strcat(strR, "/");
+  strcat(strR, strD);
+  
+  mpq_init(rop);
+  assert( mpq_set_str (rop, strR, 2) == 0);
   mpq_canonicalize( rop );
+
   retVal = d2r( mpq_get_d( rop ) );
+  mpq_clear(rop);
   return retVal;
 } 
 
@@ -151,7 +154,8 @@ struct Matrix *project(struct dMat *inp, int d){
         assert( Ph != NULL );
 
         #ifdef DBG
-        matrix_printR(tester);
+        printf("\n");
+        dMat_print(Matrix2dMat(tester));
         #endif /* DBG */
 
         long numerator[MAXCOL];

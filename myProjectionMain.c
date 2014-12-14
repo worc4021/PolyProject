@@ -16,9 +16,9 @@ int main(int argc, char const *argv[])
     struct dMat *help;
     struct Matrix *outp;
     help = dMatFromFile(&dim);
-    // dMat_print(help);
   	outp = project(help, dim);
   	help = Matrix2dMat(outp);
+    // dMat_print(help);
     toFile(help);
 
 	return 0;

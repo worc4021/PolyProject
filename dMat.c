@@ -64,10 +64,8 @@ struct dMat *dMatFromFile(int *dim)
   fp = fopen(helper ,"r");
   assert( fp != NULL );
   uint8_T out, m, n;
-  assert( fread(&out ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) );
   assert( fread(&m ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) );
   assert( fread(&n ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) );
-  *dim = (int)out;
   struct dMat *retVal;
   retVal = dMat_create((size_t)m, (size_t)n, 0);
   for (size_t i = 0; i != dMat_Cols(retVal); ++i)
@@ -76,6 +74,11 @@ struct dMat *dMatFromFile(int *dim)
     {
       assert( fread(retVal->data + i + j*n,1 , sizeof(double),fp) == sizeof(double) );
     }
+  }
+  if( fread(&out ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) ){
+    *dim = (int)out;
+  } else {
+    *dim = 0;
   }
   fclose(fp);
   return retVal;

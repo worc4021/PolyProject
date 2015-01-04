@@ -7,19 +7,19 @@ THEFOLDER = 'REPLACE_PATH';
 TEMP = [bin,-Ain];
 
 fid = fopen('/Volumes/MyDrive/MATLABtoLOWLEVEL','w+');
-fwrite(fid, uint8(dim), 'uint8');
 fwrite(fid, uint8(size(TEMP,1)), 'uint8');
 fwrite(fid, uint8(size(TEMP,2)), 'uint8');
 fwrite(fid, TEMP, 'double');
+fwrite(fid, uint8(dim), 'uint8');
 fclose(fid);
 
-[status,cmdout] = system([THEFOLDER,'/ProjectIt']);
+[~,~] = system([THEFOLDER,'/ProjectIt']);
 
 fid = fopen('/Volumes/MyDrive/LOWLEVELtoMATLAB','r');
 m = fread(fid,1,'uint8');
 n = fread(fid,1,'uint8');
 out = fread(fid, [m, n], 'double');
 fclose(fid);
-[status,cmdout] = system('rm /Volumes/MyDrive/MATLABtoLOWLEVEL /Volumes/MyDrive/LOWLEVELtoMATLAB');
+[~,~] = system('rm /Volumes/MyDrive/MATLABtoLOWLEVEL /Volumes/MyDrive/LOWLEVELtoMATLAB');
 bout = out(:,1);
 Aout = -out(:,2:end);

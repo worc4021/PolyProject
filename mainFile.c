@@ -26,12 +26,16 @@
 
 char *path = "/Volumes/MyDrive/";
 
+mpz_t gONE, gZERO;
+
 int main(int argc, char const *argv[])
 {
 	int sizeInMB = 128;
 	char *selector = "Init";
 
-	
+	mpz_init ( gZERO );
+	mpz_init_set_str ( gONE, "1", 10 );
+
 	if(strstr(argv[0], selector) != NULL) { /* This initialises the RAM disk */
 		char holder[100];
 		char helper[100];
@@ -57,7 +61,17 @@ int main(int argc, char const *argv[])
 
 		SET = dMat2GMPmat(fileout);
 
-		proj = projection(SET,dim);
+		if (argc > 1)
+		{
+			if (strstr(argv[1], "vertex") != NULL )
+			{
+				proj = H2V(SET);
+			} else {
+				proj = projection(SET,dim);
+			}
+		} else {
+			proj = projection(SET,dim);
+		}
 
 		tmpMat = GMPmat2dMat(proj);
 

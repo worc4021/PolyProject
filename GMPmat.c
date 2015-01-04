@@ -116,3 +116,20 @@ void GMPmat_getRow(mpz_t *ropN, mpz_t *ropD, struct GMPmat *A, size_t r)
         mpz_set(ropD[i], mpq_denref(A->data[r*(A->n) + i]));
     }
 }
+
+void GMPmat_printRow(const struct GMPmat *A, size_t r)
+{
+  assert ( r < A->m );
+  size_t i, n;
+  n = GMPmat_Cols(A);
+  mpq_t curVal;
+  mpq_init(curVal);
+  fprintf(stdout, "\n" );
+  for ( i = 0; i < n ; ++i){
+    GMPmat_getValue(curVal, A, r, i);
+    mpq_out_str(stdout, 10, curVal);
+    fprintf(stdout, " ");
+  }
+  fprintf(stdout, "\n" );
+  mpq_init(curVal);
+}

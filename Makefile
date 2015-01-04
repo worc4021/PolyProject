@@ -1,5 +1,5 @@
 CFLAGS := -DLRSLIB -DGMP -DTIMES -DSIGNALS -DB64 
-#-DDBG
+# DFLAG = -g
 LFLAGS = -Wl,-no_pie -lgmp
 
 # This is the path to your Matlab distribution, in particular where 
@@ -19,7 +19,7 @@ ProjectIt: $(OBJECTS)
 	$(CC) $(LFLAGS) $^ -o ProjectIt
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(MATLABINCLUDEDIR) $< -o $@ -c
+	$(CC) $(DFLAG) $(CFLAGS) -I$(MATLABINCLUDEDIR) $< -o $@ -c
 
 clean:
 	rm -f $(OBJECTS)

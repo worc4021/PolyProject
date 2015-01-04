@@ -140,3 +140,91 @@ struct dMat *GMPmat2dMat(struct GMPmat *A)
     }
     return retVal;
 }
+
+void mpz_row_print(mpz_t *row, size_t n)
+{
+    assert ( row != NULL );
+    size_t i;
+    for (i = 0; i < n; ++i)
+    {
+        mpz_out_str(stdout, 10, row[i]);
+        fprintf(stdout, " " );
+    }
+    fprintf(stdout, "\n" );
+}
+
+void mpq_row_print(mpq_t *row, size_t n)
+{
+    assert ( row != NULL );
+    size_t i;
+    for (i = 0; i < n; ++i)
+    {
+        mpq_out_str(stdout, 10, row[i]);
+        fprintf(stdout, " " );
+    }
+    fprintf(stdout, "\n" );
+}
+
+void lrs_print_data(lrs_dic *P)
+{
+    assert ( P != NULL );
+    long m, n;
+    mpq_t frac;
+    mpq_init(frac);
+    fprintf(stdout, "\n" );
+    for (m = 0; m < P->m; ++m)
+    {
+        for (n = 0; n < P->d_orig; ++n)
+        {
+            mpq_set_num(frac, P->A[m][n]);
+            mpq_set_den(frac, P->det);
+            mpq_canonicalize(frac);
+            mpq_out_str(stdout, 10, frac);
+            fprintf(stdout, " ");            
+        }
+        fprintf(stdout, "\n");
+    }
+    fprintf(stdout, "\n");
+    mpq_clear(frac);
+}
+
+void mpz_print(mpz_t op)
+{
+    assert( op != NULL );
+    fprintf(stdout, "\n");
+    mpz_out_str(stdout, 10, op);
+    fprintf(stdout, "\n");
+}
+
+void mpq_print(mpq_t op)
+{
+    assert( op != NULL );
+    fprintf(stdout, "\n");
+    mpq_out_str(stdout, 10, op);
+    fprintf(stdout, "\n");
+}
+
+void mpz_print_product(mpz_t numA, mpz_t denA, mpz_t numB, mpz_t denB)
+{
+    assert( numA != NULL && denA != NULL && numB != NULL && denB != NULL );
+    mpq_t a,b, res;
+    mpq_init(a);
+    mpq_init(b);
+    mpq_init(res);
+    
+    mpq_set_num(a, numA);
+    mpq_set_den(a, denA);
+    mpq_canonicalize(a);
+    
+    mpq_set_num(b, numB);
+    mpq_set_den(b, denB);
+    mpq_canonicalize(b);
+    
+    mpq_mul(res, a, b);
+
+    mpq_print(res);
+    
+    mpq_clear(res);
+    mpq_clear(b);
+    mpq_clear(a);
+}

@@ -26,7 +26,11 @@ if [[ ${INPUT:0:1} != "u" ]]; then
 	INITIALISE="[~,~] = system(['$THEDIRECTORY/','Init'],'-echo');"
 	
 	mv ProjectIt $THEDIRECTORY/ProjectIt
-	ln -s $THEDIRECTORY/ProjectIt $THEDIRECTORY/Init
+	if [[ -z "$(ls $THEDIRECTORY | grep Init)" ]]; then
+		ln -s $THEDIRECTORY/ProjectIt $THEDIRECTORY/Init
+	fi
+	
+	
 	cat myProjection.m | sed "s:REPLACE_PATH:$THEDIRECTORY:" > $THEDIRECTORY/myProjection.m
 
 

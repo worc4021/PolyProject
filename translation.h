@@ -16,3 +16,4 @@ void lrs_print_data(lrs_dic *P);
 void mpq_print(mpq_t op);
 void mpz_print(mpz_t op);
 void mpz_print_product(mpz_t numA, mpz_t denA, mpz_t numB, mpz_t denB);
+mpq_t *mpq_row_extract(const struct GMPmat *A, size_t r);

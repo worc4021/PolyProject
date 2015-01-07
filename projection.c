@@ -57,7 +57,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
         lrs_set_row_mp(Pv,Qv,i,num,den,GE);
       }
 
-      assert( lrs_getfirstbasis (&Pv, Qv, &Lin, FALSE) );
+      assert( lrs_getfirstbasis (&Pv, Qv, &Lin, TRUE) );
       printf("\n");
 
 
@@ -125,7 +125,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
 
         mpq_clear(curVal);
 
-        assert( lrs_getfirstbasis (&Ph, Qh, &Lin, FALSE) );
+        assert( lrs_getfirstbasis (&Ph, Qh, &Lin, TRUE) );
 
         for (col = 0L; col < Qh->nredundcol; col++)  /* print linearity space */
           lrs_printoutput (Qh, Lin[col]);
@@ -203,7 +203,7 @@ struct GMPmat *H2V(struct GMPmat *inp)
         lrs_set_row_mp(Pv,Qv,i,num,den,GE);
       }
 
-      assert( lrs_getfirstbasis (&Pv, Qv, &Lin, FALSE) );
+      assert( lrs_getfirstbasis (&Pv, Qv, &Lin, TRUE) );
       printf("\n");
 
 
@@ -274,7 +274,7 @@ struct GMPmat *V2H(struct GMPmat *inp) /* This function is untested */
       lrs_set_row_mp(P ,Q ,i ,num ,den , GE);
     }
 
-    assert ( lrs_getfirstbasis (&P, Q, &Lin, FALSE) );
+    assert ( lrs_getfirstbasis (&P, Q, &Lin, TRUE) );
     lrs_printoutput (Q, Lin[col]);
 
     do
@@ -300,3 +300,64 @@ struct GMPmat *V2H(struct GMPmat *inp) /* This function is untested */
     return retMat;
 
 }
+
+struct GMPmat *reducemat(struct GMPmat *inp)
+{
+    lrs_dic *P;
+    lrs_dat *Q;
+    lrs_mp_vector output;
+    lrs_mp_matrix Lin;
+
+    long i;
+    long col;
+
+    size_t m = GMPmat_Rows(inp);
+
+    size_t *redRows;
+    redRows = malloc( m*sizeof(*redRows) );
+    assert( redRows != NULL );
+
+    assert( lrs_init ("lrsTrial:") );
+
+    Q = lrs_alloc_dat ("LRS globals");
+    assert ( Q != NULL );
+    Q->m = m;
+    Q->n = GMPmat_Cols(inp);
+
+    output = lrs_alloc_mp_vector (Q->n);
+
+    lrs_mp_vector num, den;
+    num = lrs_alloc_mp_vector(GMPmat_Cols(inp));
+    den = lrs_alloc_mp_vector(GMPmat_Cols(inp));
+
+    P = lrs_alloc_dic (Q);
+    assert ( P != NULL );
+
+    struct GMPmat *retMat;
+    retMat = GMPmat_create(0, GMPmat_Cols(inp), 1);
+
+    for (i = 1; i <= m; ++i)
+    {
+      GMPmat_getRow(num, den, inp, i-1);
+      lrs_set_row_mp(P ,Q ,i ,num ,den , GE);
+    }
+
+    assert ( lrs_getfirstbasis (&P, Q, &Lin, TRUE) );
+
+    for (i = 1; i <= m; ++i)
+    {
+      if (!checkindex(P, Q, i))
+      {
+        retMat = GMPmat_appendRow(retMat, mpq_row_extract(inp, i-1));
+      }
+    }
+    
+    lrs_clear_mp_vector ( output, Q->n);
+    lrs_free_dic ( P , Q);
+    lrs_free_dat ( Q );
+
+    lrs_close ("lrsTrial:");
+
+    GMPmat_destroy(inp);
+    return retMat;
+  }

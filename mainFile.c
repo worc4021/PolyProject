@@ -6,7 +6,7 @@
 #include <sys/mount.h>
 #include <gmp.h>
 
-#include "./../Mex/lrslib/lrslib.h"
+#include "lrslib/lrslib.h"
 
 #include "GMPtypes.h"
 
@@ -66,14 +66,17 @@ int main(int argc, char const *argv[])
 			if (strstr(argv[1], "vertex") != NULL )
 			{
 				proj = H2V(SET);
+			} else if ( strstr(argv[1], "reduce") != NULL ) {
+				proj = reducemat ( SET );
 			} else {
-				proj = projection(SET,dim);
+				proj = projection( SET, dim );
 			}
+			
 		} else {
-			proj = projection(SET,dim);
+			proj = projection( SET, dim );
 		}
 
-		tmpMat = GMPmat2dMat(proj);
+		tmpMat = GMPmat2dMat( proj );
 
 
 		toFile(tmpMat);

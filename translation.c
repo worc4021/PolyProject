@@ -228,3 +228,18 @@ void mpz_print_product(mpz_t numA, mpz_t denA, mpz_t numB, mpz_t denB)
     mpq_clear(b);
     mpq_clear(a);
 }
+mpq_t *mpq_row_extract(const struct GMPmat *A, size_t r)
+{
+    assert ( A != NULL && r < GMPmat_Rows(A) );
+    mpq_t *retVal;
+    size_t i, n; 
+    n = GMPmat_Cols(A);
+    retVal = malloc( n*sizeof(*retVal) );
+    for ( i = 0; i < n; ++i )
+    {
+        mpq_init( retVal[i] );
+        GMPmat_getValue( retVal[i], A, r, i);
+    }
+    return retVal;
+
+}

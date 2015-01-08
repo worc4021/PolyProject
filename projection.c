@@ -344,14 +344,20 @@ struct GMPmat *reducemat(struct GMPmat *inp)
 
     assert ( lrs_getfirstbasis (&P, Q, &Lin, TRUE) );
 
-    for (i = 1; i <= m; ++i)
+    size_t lastdv = Q->lastdv;
+    size_t d = P->d;
+    size_t ineq;
+    m = P->m_A;
+
+    for (i = lastdv + 1; i <= m + d; ++i)
     {
+      ineq = Q->inequality[i - lastdv] - 1;
       if (!checkindex(P, Q, i))
       {
-        retMat = GMPmat_appendRow(retMat, mpq_row_extract(inp, i-1));
+        retMat = GMPmat_appendRow(retMat, mpq_row_extract(inp, ineq));
       }
     }
-    
+
     lrs_clear_mp_vector ( output, Q->n);
     lrs_free_dic ( P , Q);
     lrs_free_dat ( Q );

@@ -1,6 +1,4 @@
-function [Aout,bout] = myProjection(Ain,bin,dim)
-% [Aout,bout] = myProjection(Ain,bin,dim)
-% Projection of {x: Ain*x<=bin} onto x(1:(n-dim)).
+function [Aout,bout] = FUNCTION_NAME(ARGUMENT_LIST)
 
 THEFOLDER = 'REPLACE_PATH';
 
@@ -10,10 +8,10 @@ fid = fopen('/Volumes/MyDrive/MATLABtoLOWLEVEL','w+');
 fwrite(fid, uint8(size(TEMP,1)), 'uint8');
 fwrite(fid, uint8(size(TEMP,2)), 'uint8');
 fwrite(fid, TEMP, 'double');
-fwrite(fid, uint8(dim), 'uint8');
+fwrite(fid, uint8(LAST_ARGUMENT), 'uint8');
 fclose(fid);
 
-[~,~] = system([THEFOLDER,'/ProjectIt']);
+[~,~] = system([THEFOLDER,'/FUNCTION_CALL']);
 
 fid = fopen('/Volumes/MyDrive/LOWLEVELtoMATLAB','r');
 m = fread(fid,1,'uint8');

@@ -13,10 +13,10 @@ FUNCTIONPATH = ../../MATLAB/Funktionen
 OBJECTS = mainFile.o GMPmat.o dMat.o projection.o\
 		translation.o lrslib/lrslib.o lrslib/lrsgmp.o
 
-all: ProjectIt clean install
+all: mainExec clean install
 
-ProjectIt: $(OBJECTS)
-	$(CC) $(LFLAGS) $^ -o ProjectIt
+mainExec: $(OBJECTS)
+	$(CC) $(LFLAGS) $^ -o mainExec
 
 .c.o:
 	$(CC) $(DFLAG) $(CFLAGS) -I$(MATLABINCLUDEDIR) $< -o $@ -c

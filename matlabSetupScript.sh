@@ -17,22 +17,34 @@ if [[ -z "$FINISHFILE" ]]; then
 	FINISHFILE="$USERPATH/finish.m"
 fi
 
-LINESTART=$(sed -n -e "/'Init'/=" $STARTUPFILE)
-LINEFINISH=$(sed -n -e "/'Init'/=" $FINISHFILE)
+LINESTART=$(sed -n -e "/mainExec/=" $STARTUPFILE)
+LINEFINISH=$(sed -n -e "/mainExec/=" $FINISHFILE)
 
 if [[ ${INPUT:0:1} != "u" ]]; then
 	
 	THEDIRECTORY=$(realpath $INPUT)
-	INITIALISE="[~,~] = system(['$THEDIRECTORY/','Init'],'-echo');"
+	INITIALISE="[~,~] = system(['$THEDIRECTORY/','mainExec init'],'-echo');"
 	
-	mv ProjectIt $THEDIRECTORY/ProjectIt
-	if [[ -z "$(ls $THEDIRECTORY | grep Init)" ]]; then
-		ln -s $THEDIRECTORY/ProjectIt $THEDIRECTORY/Init
-	fi
+	mv mainExec $THEDIRECTORY/mainExec
 	
-	
-	cat myProjection.m | sed "s:REPLACE_PATH:$THEDIRECTORY:" > $THEDIRECTORY/myProjection.m
-
+	cat rawFunction.m | sed \
+			-e "s:REPLACE_PATH:$THEDIRECTORY:" \
+			-e "s:FUNCTION_NAME:polyProject:" \
+			-e "s:ARGUMENT_LIST:Ain,bin,dim:" \
+			-e "s:LAST_ARGUMENT:dim:" \
+			-e "s:FUNCTION_CALL:mainExec project:" > $THEDIRECTORY/polyProject.m
+	cat rawFunction.m | sed \
+			-e "s:REPLACE_PATH:$THEDIRECTORY:" \
+			-e "s:FUNCTION_NAME:rowReduce:" \
+			-e "s:ARGUMENT_LIST:Ain,bin:" \
+			-e "s:LAST_ARGUMENT:0:" \
+			-e "s:FUNCTION_CALL:mainExec reduce:" > $THEDIRECTORY/rowReduce.m
+	cat rawFunction.m | sed \
+			-e "s:REPLACE_PATH:$THEDIRECTORY:" \
+			-e "s:FUNCTION_NAME:vertexCompute:" \
+			-e "s:ARGUMENT_LIST:Ain,bin:" \
+			-e "s:LAST_ARGUMENT:0:" \
+			-e "s:FUNCTION_CALL:mainExec vertex:" > $THEDIRECTORY/vertexCompute.m
 
 	if [[ -z "$LINESTART" ]]; then
 		echo $INITIALISE >> $STARTUPFILE
@@ -45,7 +57,7 @@ if [[ ${INPUT:0:1} != "u" ]]; then
 else
 	
 	THEDIRECTORY=$(realpath ${INPUT:1:$((${#INPUT}-1))})
-	rm -f $THEDIRECTORY/ProjectIt $THEDIRECTORY/Init $THEDIRECTORY/myProjection.m
+	rm -f $THEDIRECTORY/mainExec $THEDIRECTORY/Init $THEDIRECTORY/polyProject.m $THEDIRECTORY/vertexCompute.m $THEDIRECTORY/rowReduce.m
 
 	if [[ -n "$LINESTART" ]]; then
 		sed "$LINESTART d" $STARTUPFILE >> $TF

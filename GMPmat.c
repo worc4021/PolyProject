@@ -133,3 +133,24 @@ void GMPmat_printRow(const struct GMPmat *A, size_t r)
   fprintf(stdout, "\n" );
   mpq_init(curVal);
 }
+struct GMPmat *GMPmat_dropCols(struct GMPmat *A, size_t d)
+{
+  assert ( A != NULL );
+  assert ( d < GMPmat_Cols(A) );
+  size_t m, n, i, j;
+  m = GMPmat_Rows(A);
+  n = GMPmat_Cols(A) - d;
+
+  struct GMPmat *retVal;
+  retVal = GMPmat_create( m, n, 0 );
+
+  for (i=0; i!=m; ++i){
+    for (j=0; j!=n; ++j){
+      mpq_init ( retVal->data[i*n + j] );
+      mpq_set ( retVal->data[i*n + j], A->data[i*(A->n) + j] );
+    }
+  }
+
+  GMPmat_destroy(A);
+  return retVal;
+}

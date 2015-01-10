@@ -70,7 +70,6 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
             if (lrs_getsolution (Pv, Qv, output, col)) {
               mpz_to_mpq(curRow, output, GMPmat_Cols(Helper));
               Helper = GMPmat_appendRow(Helper, curRow);
-              // lrs_printoutput(Qv, output);
             }
         }
         while (lrs_getnextbasis (&Pv, Qv, FALSE));
@@ -81,7 +80,9 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
         lrs_clear_mp_vector (den, Qv->n);
         lrs_free_dic (Pv,Qv);       /* deallocate lrs_dic */
         lrs_free_dat (Qv);          /* deallocate lrs_dat */
-     
+
+        Helper = reducevertices(Helper);
+
         Qh = lrs_alloc_dat ("LRS globals");
         assert( Qh != NULL );
 
@@ -90,7 +91,6 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
 
         Qh->hull = TRUE;     /* convex hull problem: facet enumeration      */
         Qh->polytope = TRUE;  /* input is a polytope                         */
-        // Qh->debug = TRUE;
 
         output = lrs_alloc_mp_vector (Qh->n);
         num = lrs_alloc_mp_vector (Qh->n);
@@ -150,7 +150,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
         lrs_free_dat (Qh);
 
         lrs_close ("lrsTrial:");
-        printf ("\n");       
+        printf ("\n");
 
   GMPmat_destroy(inp);
   return retVal;
@@ -275,7 +275,9 @@ struct GMPmat *V2H(struct GMPmat *inp) /* This function is untested */
     }
 
     assert ( lrs_getfirstbasis (&P, Q, &Lin, TRUE) );
-    lrs_printoutput (Q, Lin[col]);
+    
+    for (col = 0L; col < Q->nredundcol; col++)
+      lrs_printoutput (Q, Lin[col]);
 
     do
     {
@@ -323,6 +325,75 @@ struct GMPmat *reducemat(struct GMPmat *inp)
     assert ( Q != NULL );
     Q->m = m;
     Q->n = GMPmat_Cols(inp);
+
+    output = lrs_alloc_mp_vector (Q->n);
+
+    lrs_mp_vector num, den;
+    num = lrs_alloc_mp_vector(GMPmat_Cols(inp));
+    den = lrs_alloc_mp_vector(GMPmat_Cols(inp));
+
+    P = lrs_alloc_dic (Q);
+    assert ( P != NULL );
+
+    struct GMPmat *retMat;
+    retMat = GMPmat_create(0, GMPmat_Cols(inp), 1);
+
+    for (i = 1; i <= m; ++i)
+    {
+      GMPmat_getRow(num, den, inp, i-1);
+      lrs_set_row_mp(P ,Q ,i ,num ,den , GE);
+    }
+
+    assert ( lrs_getfirstbasis (&P, Q, &Lin, TRUE) );
+
+    size_t lastdv = Q->lastdv;
+    size_t d = P->d;
+    size_t ineq;
+    m = P->m_A;
+
+    for (i = lastdv + 1; i <= m + d; ++i)
+    {
+      ineq = Q->inequality[i - lastdv] - 1;
+      if (!checkindex(P, Q, i))
+      {
+        retMat = GMPmat_appendRow(retMat, mpq_row_extract(inp, ineq));
+      }
+    }
+
+    lrs_clear_mp_vector ( output, Q->n);
+    lrs_free_dic ( P , Q);
+    lrs_free_dat ( Q );
+
+    lrs_close ("lrsTrial:");
+
+    GMPmat_destroy(inp);
+    return retMat;
+  }
+
+struct GMPmat *reducevertices(struct GMPmat *inp)
+{
+    lrs_dic *P;
+    lrs_dat *Q;
+    lrs_mp_vector output;
+    lrs_mp_matrix Lin;
+
+    long i;
+    long col;
+
+    size_t m = GMPmat_Rows(inp);
+
+    size_t *redRows;
+    redRows = malloc( m*sizeof(*redRows) );
+    assert( redRows != NULL );
+
+    assert( lrs_init ("lrsTrial:") );
+
+    Q = lrs_alloc_dat ("LRS globals");
+    assert ( Q != NULL );
+    Q->m = m;
+    Q->n = GMPmat_Cols(inp);
+    Q->hull = TRUE;
+    Q->polytope = TRUE;
 
     output = lrs_alloc_mp_vector (Q->n);
 

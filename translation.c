@@ -8,6 +8,8 @@
 #include "./../Mex/lrslib/lrslib.h"
 #include "translation.h"
 
+#define d_time(t) ((double)(t.tv_sec)+(double)(t.tv_usec)/1000000)
+
 void mpz_row_clean(mpz_t *row, size_t m)
 {
     assert(row != NULL);
@@ -242,4 +244,27 @@ mpq_t *mpq_row_extract(const struct GMPmat *A, size_t r)
     }
     return retVal;
 
+}
+
+void timeIt(char *proName)
+{
+    long maxRsc;
+    struct rusage rusage;
+    getrusage (RUSAGE_SELF, &rusage);
+    maxRsc = rusage.ru_maxrss;
+    if (maxRsc / 1024 < 10 ){
+    fprintf(stderr, "%s took %0.3f seconds for computation and %0.3f and used a maximum of %ldKb.\n", 
+        proName, 
+        d_time (rusage.ru_utime),
+        d_time (rusage.ru_stime),
+        maxRsc);
+    } else {
+        fprintf(stderr, "%s took %0.3f seconds for computation and %0.3f and used a maximum of %ld.%ldMb.\n", 
+        proName, 
+        d_time (rusage.ru_utime),
+        d_time (rusage.ru_stime),
+        maxRsc/1024,
+        maxRsc%1024);
+
+    }
 }

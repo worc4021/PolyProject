@@ -8,7 +8,7 @@
 #include "translation.h"
 #include "projection.h"
 
-
+size_t pN = 20;
 
 struct GMPmat *projection(struct GMPmat *inp, int d)
 {
@@ -23,7 +23,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
 
       /* Global initialization - done once */
 
-      assert( lrs_init ("\n lrsTrial:"));
+      assert( my_lrs_init () == 0 );
 
       Qv = lrs_alloc_dat ("LRS globals");
       assert( Qv!= NULL );
@@ -58,7 +58,6 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
       }
 
       assert( lrs_getfirstbasis (&Pv, Qv, &Lin, TRUE) );
-      printf("\n");
 
 
       for (col = 0L; col < Qv->nredundcol; col++)  /* print linearity space */
@@ -70,6 +69,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
             if (lrs_getsolution (Pv, Qv, output, col)) {
               mpz_to_mpq(curRow, output, GMPmat_Cols(Helper));
               Helper = GMPmat_appendRow(Helper, curRow);
+              GMPmal_everyNrows(Helper, pN, "vertices/rays");
             }
         }
         while (lrs_getnextbasis (&Pv, Qv, FALSE));
@@ -136,7 +136,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
             if (lrs_getsolution (Ph, Qh, output, col)){
               mpz_to_mpq(curRow, output, GMPmat_Cols(retVal));
               retVal = GMPmat_appendRow(retVal, curRow);
-              // lrs_printoutput(Qh, output);
+              GMPmal_everyNrows(retVal, pN, "inequalities");
             }
         }
         while (lrs_getnextbasis (&Ph, Qh, FALSE));
@@ -149,7 +149,7 @@ struct GMPmat *projection(struct GMPmat *inp, int d)
         lrs_free_dic (Ph,Qh);
         lrs_free_dat (Qh);
 
-        lrs_close ("lrsTrial:");
+        // lrs_close ("lrsTrial:");
         printf ("\n");
 
   GMPmat_destroy(inp);
@@ -169,7 +169,7 @@ struct GMPmat *H2V(struct GMPmat *inp)
 
       /* Global initialization - done once */
 
-      assert( lrs_init ("\n lrsTrial:"));
+      assert( my_lrs_init () == 0 );
 
       Qv = lrs_alloc_dat ("LRS globals");
       assert( Qv!= NULL );
@@ -204,7 +204,6 @@ struct GMPmat *H2V(struct GMPmat *inp)
       }
 
       assert( lrs_getfirstbasis (&Pv, Qv, &Lin, TRUE) );
-      printf("\n");
 
 
       for (col = 0L; col < Qv->nredundcol; col++)  /* print linearity space */
@@ -216,6 +215,7 @@ struct GMPmat *H2V(struct GMPmat *inp)
             if (lrs_getsolution (Pv, Qv, output, col)) {
               mpz_to_mpq(curRow, output, GMPmat_Cols(Helper));
               Helper = GMPmat_appendRow(Helper, curRow);
+              GMPmal_everyNrows(Helper, pN, "vertices/rays");
             }
         }
         while (lrs_getnextbasis (&Pv, Qv, FALSE));
@@ -227,6 +227,7 @@ struct GMPmat *H2V(struct GMPmat *inp)
         lrs_free_dic (Pv,Qv);       /* deallocate lrs_dic */
         lrs_free_dat (Qv);          /* deallocate lrs_dat */
 
+        // lrs_close ("lrsTrial:");
         GMPmat_destroy(inp);
         return Helper;
 }
@@ -241,7 +242,7 @@ struct GMPmat *V2H(struct GMPmat *inp) /* This function is untested */
     long i;
     long col;
 
-    assert( lrs_init ("lrsTrial:") );
+    assert( my_lrs_init () == 0 );
 
     Q = lrs_alloc_dat ("LRS globals");
     assert ( Q != NULL );
@@ -285,6 +286,7 @@ struct GMPmat *V2H(struct GMPmat *inp) /* This function is untested */
         if (lrs_getsolution (P, Q, output, col)){
           mpz_to_mpq(curRow, output, GMPmat_Cols(retMat));
           retMat = GMPmat_appendRow(retMat, curRow);
+          GMPmal_everyNrows(retMat, pN, "inequalities");
         }
     }
     while (lrs_getnextbasis (&P, Q, FALSE));
@@ -295,8 +297,6 @@ struct GMPmat *V2H(struct GMPmat *inp) /* This function is untested */
     lrs_clear_mp_vector ( den, Q->n);
     lrs_free_dic ( P , Q);
     lrs_free_dat ( Q );
-
-    lrs_close ("lrsTrial:");
 
     GMPmat_destroy(inp);
     return retMat;
@@ -319,7 +319,7 @@ struct GMPmat *reducemat(struct GMPmat *inp)
     redRows = malloc( m*sizeof(*redRows) );
     assert( redRows != NULL );
 
-    assert( lrs_init ("lrsTrial:") );
+    assert( my_lrs_init () == 0 );
 
     Q = lrs_alloc_dat ("LRS globals");
     assert ( Q != NULL );
@@ -357,14 +357,13 @@ struct GMPmat *reducemat(struct GMPmat *inp)
       if (!checkindex(P, Q, i))
       {
         retMat = GMPmat_appendRow(retMat, mpq_row_extract(inp, ineq));
+        GMPmal_everyNrows(retMat, pN, "irredundant inequalities");
       }
     }
 
     lrs_clear_mp_vector ( output, Q->n);
     lrs_free_dic ( P , Q);
     lrs_free_dat ( Q );
-
-    lrs_close ("lrsTrial:");
 
     GMPmat_destroy(inp);
     return retMat;
@@ -386,7 +385,7 @@ struct GMPmat *reducevertices(struct GMPmat *inp)
     redRows = malloc( m*sizeof(*redRows) );
     assert( redRows != NULL );
 
-    assert( lrs_init ("lrsTrial:") );
+    assert( my_lrs_init () == 0 );
 
     Q = lrs_alloc_dat ("LRS globals");
     assert ( Q != NULL );
@@ -426,14 +425,13 @@ struct GMPmat *reducevertices(struct GMPmat *inp)
       if (!checkindex(P, Q, i))
       {
         retMat = GMPmat_appendRow(retMat, mpq_row_extract(inp, ineq));
+        GMPmal_everyNrows(retMat, pN, "irredundant vertices/rays");
       }
     }
 
     lrs_clear_mp_vector ( output, Q->n);
     lrs_free_dic ( P , Q);
     lrs_free_dat ( Q );
-
-    lrs_close ("lrsTrial:");
 
     GMPmat_destroy(inp);
     return retMat;

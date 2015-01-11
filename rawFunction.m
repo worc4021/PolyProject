@@ -11,7 +11,7 @@ fwrite(fid, TEMP, 'double');
 fwrite(fid, uint8(LAST_ARGUMENT), 'uint8');
 fclose(fid);
 
-[~,~] = system([THEFOLDER,'/FUNCTION_CALL']);
+[~,~] = system([THEFOLDER,'/FUNCTION_CALL'],'-echo');
 
 fid = fopen('/Volumes/MyDrive/LOWLEVELtoMATLAB','r');
 m = fread(fid,1,'uint8');

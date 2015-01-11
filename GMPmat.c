@@ -133,6 +133,7 @@ void GMPmat_printRow(const struct GMPmat *A, size_t r)
   fprintf(stdout, "\n" );
   mpq_init(curVal);
 }
+
 struct GMPmat *GMPmat_dropCols(struct GMPmat *A, size_t d)
 {
   assert ( A != NULL );
@@ -153,4 +154,13 @@ struct GMPmat *GMPmat_dropCols(struct GMPmat *A, size_t d)
 
   GMPmat_destroy(A);
   return retVal;
+}
+
+void GMPmal_everyNrows(struct GMPmat *A, size_t N, char *type)
+{
+  assert ( A != NULL );
+  if ( GMPmat_Rows(A) % N == 0 )
+  {
+    fprintf(stdout, "So far %zu %s found.\n", (GMPmat_Rows(A)/N)*N, type);
+  }
 }

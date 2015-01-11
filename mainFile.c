@@ -71,20 +71,20 @@ int main(int argc, char const *argv[])
 				inset = dMat2GMPmat(fileout);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Reading in data took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Reading in data took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				outset = H2V(inset);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Computing the vertices took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Computing the vertices took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
 				toFile(tmpMat);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Writing output data took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Writing output data took %f seconds.\n", cpu_time_used);
 
 				dMat_destroy(fileout);
 				dMat_destroy(tmpMat);
@@ -98,20 +98,20 @@ int main(int argc, char const *argv[])
 				inset = dMat2GMPmat(fileout);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Reading in data took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Reading in data took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				outset = reducemat(inset);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Computing minimal representation took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Computing minimal representation took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
 				toFile(tmpMat);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Writing output data took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Writing output data took %f seconds.\n", cpu_time_used);
 
 				dMat_destroy(fileout);
 				dMat_destroy(tmpMat);
@@ -125,34 +125,39 @@ int main(int argc, char const *argv[])
 				inset = dMat2GMPmat(fileout);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Reading in data took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Reading in data took %f seconds.\n", cpu_time_used);
 				
 				entry = clock();
 				inset = H2V(inset);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Computing the vertices took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Computing the vertices/rays took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				inset = GMPmat_dropCols(inset, dim);
 				inset = reducevertices(inset);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Reducing vertices took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Computing minimal vertex/ray representation took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				outset = V2H(inset);
+				out = clock();
+				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
+				fprintf(stdout, "Computing halfspace representation took %f seconds.\n", cpu_time_used);
+
+				entry = clock();
 				outset = reducemat(outset);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Evaluating facet enumeration took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Computing minimal halfspace representation took %f seconds.\n", cpu_time_used);
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
 				toFile(tmpMat);
 				out = clock();
 				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stderr, "Writing output data took %f seconds.\n", cpu_time_used);
+				fprintf(stdout, "Writing output data took %f seconds.\n", cpu_time_used);
 
 				dMat_destroy(fileout);
 				dMat_destroy(tmpMat);

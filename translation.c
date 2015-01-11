@@ -268,3 +268,14 @@ void timeIt(char *proName)
 
     }
 }
+
+int my_lrs_init()
+{
+    assert ( lrs_mp_init (ZERO, stdin, stdout) );
+    lrs_global_count = 0;
+    lrs_checkpoint_seconds = 0;
+#ifdef SIGNALS
+    setup_signals();
+#endif
+    return 0;
+}

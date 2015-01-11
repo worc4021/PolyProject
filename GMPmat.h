@@ -12,3 +12,4 @@ void GMPmat_getValue (mpq_t rop, const struct GMPmat *A, size_t r, size_t c);
 static void __GMPmat_validate_indices (const struct GMPmat *A, size_t r, size_t c);
 void GMPmat_printRow(const struct GMPmat *A, size_t r);
 struct GMPmat *GMPmat_dropCols(struct GMPmat *A, size_t d);
+void GMPmal_everyNrows(struct GMPmat *A, size_t N, char *type);

@@ -210,7 +210,11 @@ typedef struct lrs_dat			/* global problem data   */
 
 }lrs_dat, lrs_dat_p;
 
+/* Variables and functions global to this file only */
+static long lrs_checkpoint_seconds = 0;
 
+static long lrs_global_count = 0;	/* Track how many lrs_dat records are 
+					   allocated */
 
 #ifdef PLRS
 /****************/

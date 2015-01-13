@@ -16,16 +16,21 @@ OBJECTS = mainFile.o GMPmat.o dMat.o projection.o\
 all: mainExec clean install
 
 mainExec: $(OBJECTS)
-	$(CC) $(LFLAGS) $^ -o mainExec
+	@ $(CC) $(LFLAGS) $^ -o mainExec 
+	@echo Linking $@.
 
 .c.o:
-	$(CC) $(DFLAG) $(CFLAGS) -I$(MATLABINCLUDEDIR) $< -o $@ -c
+	@ $(CC) $(DFLAG) $(CFLAGS) -I$(MATLABINCLUDEDIR) $< -o $@ -c 
+	@echo Building $@.
 
 clean:
-	rm -f $(OBJECTS)
+	@rm -f $(OBJECTS) 
+	@echo Cleaned up
 
 install:
-	bash -c "source matlabSetupScript.sh $(FUNCTIONPATH)"
+	@bash -c "source matlabSetupScript.sh $(FUNCTIONPATH)"
+	@echo Installing function to $(FUNCTIONPATH) and setting up search path.
 
 uninstall:
-	bash -c "source matlabSetupScript.sh u$(FUNCTIONPATH)"
+	@bash -c "source matlabSetupScript.sh u$(FUNCTIONPATH)"
+	@echo Uninstalling function.

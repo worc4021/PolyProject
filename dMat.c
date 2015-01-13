@@ -63,9 +63,9 @@ struct dMat *dMatFromFile(int *dim)
   strcat(helper, "MATLABtoLOWLEVEL");
   fp = fopen(helper ,"r");
   assert( fp != NULL );
-  uint8_T out, m, n;
-  assert( fread(&m ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) );
-  assert( fread(&n ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) );
+  uint32_T out, m, n;
+  assert( fread(&m ,1 , sizeof(uint32_T),fp) == sizeof(uint32_T) );
+  assert( fread(&n ,1 , sizeof(uint32_T),fp) == sizeof(uint32_T) );
   struct dMat *retVal;
   retVal = dMat_create((size_t)m, (size_t)n, 0);
   for (size_t i = 0; i != dMat_Cols(retVal); ++i)
@@ -75,7 +75,7 @@ struct dMat *dMatFromFile(int *dim)
       assert( fread(retVal->data + i + j*n,1 , sizeof(double),fp) == sizeof(double) );
     }
   }
-  if( fread(&out ,1 , sizeof(uint8_T),fp) == sizeof(uint8_T) ){
+  if( fread(&out ,1 , sizeof(uint32_T),fp) == sizeof(uint32_T) ){
     *dim = (int)out;
   } else {
     *dim = 0;
@@ -92,10 +92,10 @@ void toFile(struct dMat *A)
   strcat(helper, "LOWLEVELtoMATLAB");
   fp = fopen(helper, "w");
   assert( fp != NULL );
-  uint8_T m = (uint8_T)dMat_Rows(A);
-  uint8_T n = (uint8_T)dMat_Cols(A);
-  assert( fwrite(&m , 1, sizeof(uint8_T), fp) == sizeof(uint8_T) );
-  assert( fwrite(&n , 1, sizeof(uint8_T), fp) == sizeof(uint8_T) );
+  uint32_T m = (uint32_T)dMat_Rows(A);
+  uint32_T n = (uint32_T)dMat_Cols(A);
+  assert( fwrite(&m , 1, sizeof(uint32_T), fp) == sizeof(uint32_T) );
+  assert( fwrite(&n , 1, sizeof(uint32_T), fp) == sizeof(uint32_T) );
   for (int i = 0; i != dMat_Cols(A); ++i)
   {
     for (int j = 0; j != dMat_Rows(A); ++j)

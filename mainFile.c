@@ -131,6 +131,7 @@ int main(int argc, char const *argv[])
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
+				toFile(tmpMat);
 				clockout(entry, "Writing output data");
 
 				dMat_destroy(fileout);

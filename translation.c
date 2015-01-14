@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <gmp.h>
+#include <math.h>
 #include "GMPmat.h"
 #include "dMat.h"
 #include "./../Mex/lrslib/lrslib.h"
@@ -278,4 +279,26 @@ int my_lrs_init()
     setup_signals();
 #endif
     return 0;
+}
+
+
+void clockout(clock_t in, char *type)
+{
+    clock_t out = clock();
+    double cpu_time_used = ((double) (out - in)) / CLOCKS_PER_SEC;
+    if (cpu_time_used < 60)
+    {
+        fprintf(stdout, "%s took %f seconds.\n", type, cpu_time_used);
+    } else if (cpu_time_used > 60 && cpu_time_used < 3600)
+    {
+        fprintf(stdout, "%s took %d minutes and %d seconds.\n", type, (int) floor(cpu_time_used/60),
+            (int)(cpu_time_used - floor(cpu_time_used/60)*60 ) );
+    } else
+    {
+        fprintf(stdout, "%s took %d hours, %d minutes and %d seconds.\n", type, 
+            (int) floor(cpu_time_used/3600),
+            (int) (floor((cpu_time_used - floor(cpu_time_used/3600)*3600)/60) ),
+            (int) floor(cpu_time_used - (floor((cpu_time_used - floor(cpu_time_used/3600)*3600)/60)*60 ) )
+            );
+    }
 }

@@ -41,8 +41,7 @@ int main(int argc, char const *argv[])
 
 	struct GMPmat *outset, *inset;
 
-	clock_t entry, out;
-	double cpu_time_used;
+	clock_t entry;
 
 
 	if (argc > 1)
@@ -69,22 +68,16 @@ int main(int argc, char const *argv[])
 				entry = clock();
 				fileout = dMatFromFile(&dim);
 				inset = dMat2GMPmat(fileout);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Reading in data took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Reading in data");
 
 				entry = clock();
 				outset = H2V(inset);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Computing the vertices took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Computing the vertices");
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
 				toFile(tmpMat);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Writing output data took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Writing output data");
 
 				dMat_destroy(fileout);
 				dMat_destroy(tmpMat);
@@ -96,22 +89,16 @@ int main(int argc, char const *argv[])
 				entry = clock();
 				fileout = dMatFromFile(&dim);
 				inset = dMat2GMPmat(fileout);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Reading in data took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Reading in data");
 
 				entry = clock();
 				outset = reducemat(inset);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Computing minimal representation took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Computing minimal representation");
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
 				toFile(tmpMat);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Writing output data took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Writing output data");
 
 				dMat_destroy(fileout);
 				dMat_destroy(tmpMat);
@@ -123,41 +110,28 @@ int main(int argc, char const *argv[])
 				entry = clock();
 				fileout = dMatFromFile(&dim);
 				inset = dMat2GMPmat(fileout);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Reading in data took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Reading in data");
 				
 				entry = clock();
 				inset = H2V(inset);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Computing the vertices/rays took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Computing the vertices/rays");
 
 				entry = clock();
 				inset = GMPmat_dropCols(inset, dim);
 				inset = reducevertices(inset);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Computing minimal vertex/ray representation took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Computing minimal vertex/ray representation");
 
 				entry = clock();
 				outset = V2H(inset);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Computing halfspace representation took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Computing halfspace representation");
 
 				entry = clock();
 				outset = reducemat(outset);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Computing minimal halfspace representation took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Computing minimal halfspace representation");
 
 				entry = clock();
 				tmpMat = GMPmat2dMat( outset );
-				toFile(tmpMat);
-				out = clock();
-				cpu_time_used = ((double) (out - entry)) / CLOCKS_PER_SEC;
-				fprintf(stdout, "Writing output data took %f seconds.\n", cpu_time_used);
+				clockout(entry, "Writing output data");
 
 				dMat_destroy(fileout);
 				dMat_destroy(tmpMat);

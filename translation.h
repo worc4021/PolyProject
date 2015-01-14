@@ -1,5 +1,6 @@
 #pragma once
 #include "GMPtypes.h"
+#include <time.h>
 
 struct dMat *GMPmat2dMat(struct GMPmat *A);
 struct GMPmat *dMat2GMPmat(struct dMat *A);
@@ -19,3 +20,4 @@ void mpz_print_product(mpz_t numA, mpz_t denA, mpz_t numB, mpz_t denB);
 mpq_t *mpq_row_extract(const struct GMPmat *A, size_t r);
 void timeIt(char *proName);
 int my_lrs_init();
+void clockout(clock_t in, char *type);

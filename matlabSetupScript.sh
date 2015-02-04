@@ -46,6 +46,13 @@ if [[ ${INPUT:0:1} != "u" ]]; then
 			-e "s:LAST_ARGUMENT:0:" \
 			-e "s:FUNCTION_CALL:mainExec vertex:" > $THEDIRECTORY/vertexCompute.m
 
+	cat rawFunction.m | sed \
+			-e "s:REPLACE_PATH:$THEDIRECTORY:" \
+			-e "s:FUNCTION_NAME:facetEnumerate:" \
+			-e "s:ARGUMENT_LIST:Ain,bin:" \
+			-e "s:LAST_ARGUMENT:0:" \
+			-e "s:FUNCTION_CALL:mainExec facet:" > $THEDIRECTORY/facetEnumerate.m
+
 	if [[ -z "$LINESTART" ]]; then
 		echo $INITIALISE >> $STARTUPFILE
 	fi

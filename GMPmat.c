@@ -164,3 +164,22 @@ void GMPmal_everyNrows(struct GMPmat *A, size_t N, char *type)
     fprintf(stdout, "So far %zu %s found.\n", (GMPmat_Rows(A)/N)*N, type);
   }
 }
+
+void GMPmat_invertSignForFacetEnumeration(struct GMPmat *A)
+{
+  assert ( A != NULL );
+  size_t i, j, m, n;
+  m = GMPmat_Rows(A);
+  n = GMPmat_Cols(A);
+  mpq_t holder;
+  mpq_init(holder);
+  for (i = 0; i < m; i++)
+  {
+    for (j = 1; j < n; j++)
+    {
+      GMPmat_getValue(holder, A, i, j);
+      mpq_neg(A->data[i*(A->n) + j], holder);
+    }
+  }
+  mpq_clear(holder);
+}

@@ -115,6 +115,28 @@ int main(int argc, char const *argv[])
 				GMPmat_destroy(outset);
 				return 0;
 		}
+		else if ( !strcmp( argv[1], "vertexreduce" ))
+		{
+				entry = clock();
+				fileout = dMatFromFile(&dim);
+				inset = dMat2GMPmat(fileout);
+				// GMPmat_invertSignForFacetEnumeration(inset);
+				clockout(entry, "Reading in data");
+
+				entry = clock();
+				outset = reducevertices(inset);
+				clockout(entry, "Computing minimal vertex/ray representation");
+
+				entry = clock();
+				tmpMat = GMPmat2dMat( outset );
+				toFile(tmpMat);
+				clockout(entry, "Writing output data");
+
+				dMat_destroy(fileout);
+				dMat_destroy(tmpMat);
+				GMPmat_destroy(outset);
+				return 0;
+		}
 		else if ( !strcmp( argv[1], "reduce" )){
 					
 				entry = clock();

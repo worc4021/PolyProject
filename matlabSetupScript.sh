@@ -45,7 +45,12 @@ if [[ ${INPUT:0:1} != "u" ]]; then
 			-e "s:ARGUMENT_LIST:Ain,bin:" \
 			-e "s:LAST_ARGUMENT:0:" \
 			-e "s:FUNCTION_CALL:mainExec vertex:" > $THEDIRECTORY/vertexCompute.m
-
+	cat rawFunction.m | sed \
+			-e "s:REPLACE_PATH:$THEDIRECTORY:" \
+			-e "s:FUNCTION_NAME:vertexReduce:" \
+			-e "s:ARGUMENT_LIST:Ain,bin:" \
+			-e "s:LAST_ARGUMENT:0:" \
+			-e "s:FUNCTION_CALL:mainExec vertexreduce:" > $THEDIRECTORY/vertexReduce.m
 	cat rawFunction.m | sed \
 			-e "s:REPLACE_PATH:$THEDIRECTORY:" \
 			-e "s:FUNCTION_NAME:facetEnumerate:" \
@@ -64,7 +69,7 @@ if [[ ${INPUT:0:1} != "u" ]]; then
 else
 	
 	THEDIRECTORY=$(realpath ${INPUT:1:$((${#INPUT}-1))})
-	rm -f $THEDIRECTORY/mainExec $THEDIRECTORY/Init $THEDIRECTORY/polyProject.m $THEDIRECTORY/vertexCompute.m $THEDIRECTORY/rowReduce.m
+	rm -f $THEDIRECTORY/mainExec $THEDIRECTORY/Init $THEDIRECTORY/polyProject.m $THEDIRECTORY/vertexCompute.m $THEDIRECTORY/rowReduce.m $THEDIRECTORY/vertexReduce.m $THEDIRECTORY/facetEnumerate.m
 
 	if [[ -n "$LINESTART" ]]; then
 		sed "$LINESTART d" $STARTUPFILE >> $TF
